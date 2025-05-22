@@ -1,0 +1,18 @@
+name: Streak Notifier
+on:
+  schedule:
+    - cron: '30 14 * * *'  # 2:30 PM daily
+    - cron: '0 18 * * *'    # 6:00 PM daily
+  workflow_dispatch:        # Manual trigger option
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v3
+      - run: node streak.js
+        env:
+          TELEGRAM_TOKEN: ${{ 7845291774:AAE1RheJ2n5m_ToZ4uHKOhjiebME8cMngCI }}
+          CHAT_ID: ${{ 1396848280 }}
+          APE_KEY: ${{ NjgyZWI4MjdkZjIxYTVjMWRhYjhlMmE3LmJNX1V3NXFRMnhLNG1adjdBUXJFLWQwSWFCa1ZUd3FT }}
