@@ -5,31 +5,37 @@ const CHAT_ID = process.env.CHAT_ID;
 
 async function checkStreak() {
   try {
+    // 1. Fetch MonkeyType data
+    console.log("Fetching streak data...");
     const { data } = await axios.get("https://api.monkeytype.com/users/streak", {
       headers: { Authorization: `Bearer ${APE_KEY}` }
     });
+    console.log("MonkeyType response:", JSON.stringify(data, null, 2));
 
+    // 2. Prepare message
     const today = new Date().toISOString().split('T')[0];
     const lastCompleted = data.data.lastCompleted;
     const streakLength = data.data.length;
+    
+    let message = lastCompleted === today
+      ? `✅ *${streakLength}-day streak maintained!* \\n\\nKeep typing tomorrow!`
+      : `⚠️ *Streak Alert!* \\n\\nYour ${streakLength}-day streak needs typing today!`;
 
-    let message = "";
-    if (lastCompleted === today) {
-      message = `✅ *${streakLength}-day streak maintained!* \\n\\nKeep it going tomorrow!`;
-    } else {
-      const now = new Date();
-      message = now.getHours() < 18
-        ? `⚠️ *Streak Alert!* \\n\\nYour ${streakLength}-day streak needs typing today!`
-        : `⏰ *EMERGENCY!* \\n\\nYour ${streakLength}-day streak will BREAK soon!`;
-    }
+    // 3. Send to Telegram
+    console.log("Sending to Telegram:", message);
+    const tgResponse = await axios.post(
+      `https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`,
+      {
+        chat_id: CHAT_ID,
+        text: message,
+        parse_mode: "MarkdownV2"
+      }
+    );
+    console.log("Telegram response:", JSON.stringify(tgResponse.data, null, 2));
 
-    await axios.post(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`, {
-      chat_id: CHAT_ID,
-      text: message,
-      parse_mode: "MarkdownV2"
-    });
   } catch (error) {
-    console.error("Error:", error.message);
+    console.error("FULL ERROR:", error.response?.data || error.message);
+    process.exit(1);
   }
 }
 
