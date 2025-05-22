@@ -1,17 +1,14 @@
-name: Send Daily Reminders
+name: Test Reminders
 
 on:
-  schedule:
-    # Run every hour to check for reminders
-    - cron: '0 * * * *'
-  workflow_dispatch: # Allow manual triggering
+  workflow_dispatch: # Manual trigger only
 
 permissions:
   contents: write
   actions: read
 
 jobs:
-  send-reminders:
+  test-reminders:
     runs-on: ubuntu-latest
     
     steps:
@@ -29,28 +26,19 @@ jobs:
         
     - name: Download user data
       run: |
-        # Download users.json from repository if it exists
         if [ -f users.json ]; then
           echo "users.json found"
+          cat users.json
         else
           echo "{}" > users.json
+          echo "Created empty users.json"
         fi
         
-    - name: Send reminders
+    - name: Test send reminders (FORCE MODE)
       env:
         BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
         REMINDER_MODE: 'true'
+        TEST_MODE: 'true'
       run: |
+        echo "Running in TEST MODE - will send reminders regardless of time"
         python main.py
-        
-    - name: Commit and push updated user data
-      run: |
-        git config --local user.email "action@github.com"
-        git config --local user.name "GitHub Action"
-        git add users.json
-        if git diff --staged --quiet; then
-          echo "No changes to commit"
-        else
-          git commit -m "Update user reminder data [skip ci]"
-          git push origin main
-        fi
