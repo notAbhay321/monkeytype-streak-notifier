@@ -13,6 +13,6 @@ jobs:
       - uses: actions/setup-node@v3
       - run: node streak.js
         env:
-          TELEGRAM_TOKEN: ${{ 7845291774:AAE1RheJ2n5m_ToZ4uHKOhjiebME8cMngCI }}
-          CHAT_ID: ${{ 1396848280 }}
-          APE_KEY: ${{ NjgyZWI4MjdkZjIxYTVjMWRhYjhlMmE3LmJNX1V3NXFRMnhLNG1adjdBUXJFLWQwSWFCa1ZUd3FT }}
+          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+          CHAT_ID: ${{ secrets.CHAT_ID }}
+          APE_KEY: ${{ secrets.APE_KEY }}
