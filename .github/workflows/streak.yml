@@ -9,10 +9,11 @@ jobs:
   notify:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v3
-      - run: node streak.js
-        env:
-          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
-          CHAT_ID: ${{ secrets.CHAT_ID }}
-          APE_KEY: ${{ secrets.APE_KEY }}
+        - uses: actions/checkout@v4
+        - uses: actions/setup-node@v3
+        - run: npm install  # 👈 Add this line
+        - run: node streak.js
+          env:
+            TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+            CHAT_ID: ${{ secrets.CHAT_ID }}
+            APE_KEY: ${{ secrets.APE_KEY }}
