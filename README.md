@@ -1,0 +1,1 @@
+# monkeytype-streak-notifier
