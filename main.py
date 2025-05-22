@@ -241,15 +241,25 @@ async def send_reminders():
     current_hour = datetime.now(timezone.utc).hour
     today = datetime.now(timezone.utc).date().isoformat()
     
+    print(f"Current UTC hour: {current_hour}")
+    print(f"Today: {today}")
+    print(f"Number of users: {len(users)}")
+    
+    # Check if we're in test mode (for debugging)
+    test_mode = os.getenv('TEST_MODE') == 'true'
+    
     for user_id, user_data in users.items():
         try:
             # Calculate the target hour for this user
             target_hour = user_data['offset_hours'] % 24
             
-            # Check if it's time to send reminder for this user
-            if current_hour == target_hour:
-                # Check if we already sent a reminder today
-                if user_data.get('last_reminder') == today:
+            print(f"User {user_id}: target_hour={target_hour}, last_reminder={user_data.get('last_reminder')}")
+            
+            # Check if it's time to send reminder for this user (or if in test mode)
+            if current_hour == target_hour or test_mode:
+                # Check if we already sent a reminder today (skip in test mode)
+                if not test_mode and user_data.get('last_reminder') == today:
+                    print(f"Already sent reminder to user {user_id} today")
                     continue
                 
                 # Get current streak
@@ -268,15 +278,23 @@ async def send_reminders():
                     import random
                     message = random.choice(messages)
                     
+                    if test_mode:
+                        message = f"🧪 TEST: {message}"
+                    
                     await app.bot.send_message(
                         chat_id=user_data['chat_id'],
                         text=message
                     )
                     
-                    # Update last reminder date
-                    users[user_id]['last_reminder'] = today
+                    # Update last reminder date (only if not in test mode)
+                    if not test_mode:
+                        users[user_id]['last_reminder'] = today
                     
                     print(f"Sent reminder to user {user_id}")
+                else:
+                    print(f"Failed to get MonkeyType data for user {user_id}")
+            else:
+                print(f"Not time for user {user_id} (current: {current_hour}, target: {target_hour})")
                 
         except Exception as e:
             print(f"Error sending reminder to user {user_id}: {e}")
