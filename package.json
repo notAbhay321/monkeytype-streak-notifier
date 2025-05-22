@@ -1,5 +1,21 @@
 {
+  "name": "monkeytype-streak-guardian",
+  "version": "2.0.0",
+  "description": "Advanced MonkeyType streak monitoring and reminder system",
+  "main": "streak-guardian.js",
   "dependencies": {
     "axios": "^1.6.2"
-  }
+  },
+  "scripts": {
+    "start": "node streak-guardian.js",
+    "test": "node streak-guardian.js",
+    "morning": "TEST_MODE=morning node streak-guardian.js",
+    "afternoon": "TEST_MODE=afternoon node streak-guardian.js",
+    "evening": "TEST_MODE=evening node streak-guardian.js",
+    "warning": "TEST_MODE=warning node streak-guardian.js",
+    "weekly": "TEST_MODE=weekly node streak-guardian.js"
+  },
+  "keywords": ["monkeytype", "typing", "streak", "reminder", "automation"],
+  "author": "Streak Guardian",
+  "license": "MIT"
 }
